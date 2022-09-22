@@ -1,0 +1,101 @@
+external_components:
+  - source: github://oxan/esphome-stream-server
+
+
+substitutions:
+  devicename: studyroom
+  upper_devicename: "studyroom"  #ESP設備名稱
+  tcp_port: "8880"
+
+esphome:
+  name: $devicename
+
+stream_server:
+   uart_id: uart_bus
+   port: ${tcp_port}
+
+custom_component:
+  - lambda: |-
+      auto stream_server = new StreamServerComponent(id(uart_bus));
+      return {stream_server};
+      
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+  baud_rate: 0 # disable serial logging; pins are used for sensor module comm
+
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "pEUUYFekd09diLicVyz9eDzSTP+lz94zmw60H3MKx2I="
+
+ota:
+  password: "6490309c2967b254ba2cc4580d284e5e"
+
+wifi:
+  ssid: "wifi帳號"          #自行修改要連線的wifi帳號
+  password: "wifi密碼"      #自行修改要連線的wifi密碼
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "studyroom"
+    password: "S7V6WbTWuf1W"
+
+captive_portal:
+
+i2c:
+  sda: D2
+  scl: D1
+  scan: true
+  id: bus_a
+
+web_server:
+
+uart:
+  id: uart_bus
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 256000
+  
+
+
+sensor:
+  - platform: bh1750
+    name: "studyroom illuminance"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    address: 0x23
+    update_interval: 1s
+  - platform: sht3xd                      #如果拿到的溫溼度是aht10請改為aht10
+    temperature:
+      name: "studyroom temperature"       #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+      id: test1
+      filters:
+        - calibrate_linear:
+            # Map 0.0 (from sensor) to 0.0 (true value)
+            - 35.8 -> 28.15
+            - 36.5 -> 28.78
+
+    humidity:
+      name: "studyroom humidity"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+      filters:
+        - calibrate_linear:
+            # Map 0.0 (from sensor) to 0.0 (true value)
+            - 50.3 -> 77.56
+            - 53.6 -> 81.17
+    address: 0x44
+    update_interval: 1s
+
+binary_sensor:
+  - platform: gpio
+    pin: D6
+    name: "studyroom motion"       #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    device_class: motion
+  - platform: gpio
+    pin: D7
+    name: "studyroom presence"      #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    device_class: motion
+    
+
+        
