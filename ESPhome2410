@@ -67,23 +67,22 @@ sensor:
     name: "studyroom illuminance"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
     address: 0x23
     update_interval: 1s
-  - platform: sht3xd                      #如果拿到的溫溼度是aht10請改為aht10
+  - platform: sht3xd                      
     temperature:
       name: "studyroom temperature"       #自行修改實體名稱，盡量不要中文，ESPhome支援度低
-      id: test1
-      filters:
+      filters:                            #以下內容為溫度校驗結果，可自行修改，需放置一個晚上穩定才準確
         - calibrate_linear:
             # Map 0.0 (from sensor) to 0.0 (true value)
-            - 35.8 -> 28.15
-            - 36.5 -> 28.78
+            - 35.8 -> 28.15               #ESPhome實際讀取溫度->校驗後溫度
+            - 36.5 -> 28.78               #ESPhome實際讀取溫度->校驗後溫度
 
     humidity:
       name: "studyroom humidity"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
-      filters:
+      filters:                           #以下內容為濕度校驗結果，可自行修改，需放置一個晚上穩定才準確
         - calibrate_linear:
             # Map 0.0 (from sensor) to 0.0 (true value)
-            - 50.3 -> 77.56
-            - 53.6 -> 81.17
+            - 50.3 -> 77.56               #ESPhome實際讀取濕度->校驗後濕度
+            - 53.6 -> 81.17               #ESPhome實際讀取濕度->校驗後濕度
     address: 0x44
     update_interval: 1s
 
