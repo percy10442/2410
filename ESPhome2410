@@ -3,8 +3,8 @@ external_components:
 
 
 substitutions:
-  devicename: studyroom
-  upper_devicename: "studyroom"  #ESP設備名稱
+  devicename: studyroom           #改跟name一樣
+  upper_devicename: "studyroom"   # ""內改跟name一樣
   tcp_port: "8880"
 
 esphome:
@@ -67,8 +67,7 @@ sensor:
     name: "studyroom illuminance"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
     address: 0x23
     update_interval: 1s
-    
-#溫溼度sensor為紫色PCB用以下這一段，刪除  - platform: aht10下一段    
+
   - platform: sht3xd                      
     temperature:
       name: "studyroom temperature"       #自行修改實體名稱，盡量不要中文，ESPhome支援度低
@@ -84,23 +83,7 @@ sensor:
             - 53.6 -> 81.17               #ESPhome實際讀取濕度->校驗後濕度
     address: 0x44
     update_interval: 1s
-    
-#溫溼度sensor為藍色PCB用以下這一段，刪除- platform: sht3xd上一段    
-  - platform: aht10
-    temperature:
-      name: "diningroom temperature"    #自行修改實體名稱，盡量不要中文，ESPhome支援度低
-      filters:                          #以下內容為溫度校驗結果，可自行修改，需放置一個晚上穩定才準確
-        - calibrate_linear:
-            - 38.67 -> 30.3             #ESPhome實際讀取溫度->校驗後溫度
-            - 36.5 -> 27.1              #ESPhome實際讀取溫度->校驗後溫度
-    humidity:
-      name: "diningroom humidity"        #自行修改實體名稱，盡量不要中文，ESPhome支援度低
-      filters:                           #以下內容為溫度校驗結果，可自行修改，需放置一個晚上穩定才準確
-        - calibrate_linear:
-            - 39.44 -> 62.8              #ESPhome實際讀取溫度->校驗後溫度
-            - 45.73 -> 72.6              #ESPhome實際讀取溫度->校驗後溫度
-    update_interval: 1s
-    
+
 binary_sensor:
   - platform: gpio
     pin: D6
