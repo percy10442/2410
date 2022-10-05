@@ -66,7 +66,7 @@ sensor:
   - platform: bh1750
     name: "studyroom illuminance"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
     address: 0x23
-    update_interval: 60s
+    update_interval: 1s
 
   - platform: sht3xd                      
     temperature:
@@ -82,7 +82,7 @@ sensor:
             - 50.3 -> 77.56               #ESPhome實際讀取濕度->校驗後濕度
             - 53.6 -> 81.17               #ESPhome實際讀取濕度->校驗後濕度
     address: 0x44
-    update_interval: 60s
+    update_interval: 1s
 
 binary_sensor:
   - platform: gpio
