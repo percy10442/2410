@@ -30,7 +30,7 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "pEUUYFekd09diLicVyz9eDzSTP+lz94zmw60H3MKx2I="
+    key: "pEUUYFekd09diLicVyz9eDzSTP+lz94zmw60H3MKx2I="       #金鑰，建議自行修改，須符合規則
 
 ota:
   password: "6490309c2967b254ba2cc4580d284e5e"
