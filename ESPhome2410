@@ -15,7 +15,7 @@ stream_server:
    port: ${tcp_port}
    
    
-######新版本砍掉以下這區塊#####
+######2023/2/10後新版本砍掉以下這區塊#####
 custom_component:
   - lambda: |-
       auto stream_server = new StreamServerComponent(id(uart_bus));
