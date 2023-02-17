@@ -99,7 +99,7 @@ sensor:
       name: Move Energy          #自行修改實體名稱，盡量不要中文，ESPhome支援度低
     still_energy:             #靜止目標的能量
       name: Still Energy           #自行修改實體名稱，盡量不要中文，ESPhome支援度低
-    detection_distance:       #目標的距離（以厘米為單位），這個最好用
+    detection_distance:       #目標的距離（以厘米為單位）
       name: Detection Distance      #自行修改實體名稱，盡量不要中文，ESPhome支援度低
       
 binary_sensor:
