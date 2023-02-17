@@ -1,0 +1,116 @@
+esphome:
+  name: studyroom           #改跟name一樣
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+  baud_rate: 0 # disable serial logging; pins are used for sensor module comm
+
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "pEUUYFekd09diLicVyz9eDzSTP+lz94zmw60H3MKx2I="       #金鑰，建議自行修改，須符合規則
+
+ota:
+  password: "6490309c2967b254ba2cc4580d284e5e"
+
+wifi:
+  ssid: "wifi帳號"          #自行修改要連線的wifi帳號
+  password: "wifi密碼"      #自行修改要連線的wifi密碼
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "studyroom"
+    password: "S7V6WbTWuf1W"
+
+captive_portal:
+
+i2c:
+  sda: D2
+  scl: D1
+  scan: true
+  id: bus_a
+
+web_server:
+
+uart:
+  id: uart1
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1  
+  
+ld2410:
+####以下部分可以用藍芽或官方程式直接設定，所以可以不寫，也可在這邊撰寫更改#####
+  timeout: 150s           #離開後存在狀態將保持存在的時間（以秒為單位）
+  max_move_distance : 6m  #運動檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
+  max_still_distance: 0.75m #靜態檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
+  g0_move_threshold: 10      #用於運動檢測的第 X 個門的閾值（X => 0 到 8）。對於所考慮的門（距離）高於此級別，將觸發移動檢測。以下相同
+  g0_still_threshold: 20     #用於靜態檢測的第 X 個門的閾值。（X => 0 到 8）。對於所考慮的門（距離）高於此水平，將觸發靜止檢測。以下相同
+  g1_move_threshold: 10
+  g1_still_threshold: 20
+  g2_move_threshold: 20
+  g2_still_threshold: 21
+  g3_move_threshold: 30
+  g3_still_threshold: 31
+  g4_move_threshold: 40
+  g4_still_threshold: 41
+  g5_move_threshold: 50
+  g5_still_threshold: 51
+  g6_move_threshold: 60
+  g6_still_threshold: 61
+  g7_move_threshold: 70
+  g7_still_threshold: 71
+  g8_move_threshold: 80
+  g8_still_threshold: 81
+###########################################################
+
+sensor:
+  - platform: bh1750
+    name: "studyroom illuminance"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    address: 0x23
+    update_interval: 60s
+
+  - platform: sht3xd                      
+    temperature:
+      name: "studyroom temperature"       #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+      filters:                            #以下內容為溫度校驗結果，可自行修改，需放置一個晚上穩定才準確
+        - calibrate_linear:
+            - 35.8 -> 28.15               #ESPhome實際讀取溫度->校驗後溫度
+            - 36.5 -> 28.78               #ESPhome實際讀取溫度->校驗後溫度
+    humidity:
+      name: "studyroom humidity"         #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+      filters:                           #以下內容為濕度校驗結果，可自行修改，需放置一個晚上穩定才準確
+        - calibrate_linear:
+            - 50.3 -> 77.56               #ESPhome實際讀取濕度->校驗後濕度
+            - 53.6 -> 81.17               #ESPhome實際讀取濕度->校驗後濕度
+    address: 0x44
+    update_interval: 60s
+  - platform: ld2410
+    moving_distance:          #檢測到的移動目標的距離
+      name : Moving Distance     #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    still_distance:           #檢測到的靜止目標的距離
+      name: Still Distance       #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    moving_energy:            #移動目標的能量
+      name: Move Energy          #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    still_energy:             #靜止目標的能量
+      name: Still Energy           #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    detection_distance:       #目標的距離（以厘米為單位），這個最好用
+      name: Detection Distance      #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+      
+binary_sensor:
+  - platform: gpio
+    pin: D6
+    name: "studyroom motion"       #自行修改實體名稱，盡量不要中文，ESPhome支援度低
+    device_class: motion
+  - platform: ld2410
+    has_target:                    #檢測目標靜止或運動為on，自行修改實體名稱，盡量不要中文，ESPhome支援度低，這個最好用
+      name: studyroom presence
+    has_moving_target:             #檢測目標運動為on，自行修改實體名稱，盡量不要中文，ESPhome支援度低
+      name: Moving Target
+    has_still_target:              #檢測目標靜止為on，自行修改實體名稱，盡量不要中文，ESPhome支援度低
+      name: Still Target
