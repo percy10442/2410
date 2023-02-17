@@ -49,8 +49,8 @@ ld2410:
   timeout: 150s           #離開後存在狀態將保持存在的時間（以秒為單位）
   max_move_distance : 6m  #運動檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
   max_still_distance: 0.75m #靜態檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
-  g0_move_threshold: 10      #用於運動檢測的第 X 個門的閾值（X => 0 到 8）。對於所考慮的門（距離）高於此級別，將觸發移動檢測。以下相同
-  g0_still_threshold: 20     #用於靜態檢測的第 X 個門的閾值。（X => 0 到 8）。對於所考慮的門（距離）高於此水平，將觸發靜止檢測。以下相同
+  g0_move_threshold: 10      #用於運動檢測的第 gX 個門的閾值（X => 0 到 8）。對於所考慮的門（距離）高於此級別，將觸發移動檢測。以下相同
+  g0_still_threshold: 20     #用於靜態檢測的第 gX 個門的閾值。（X => 0 到 8）。對於所考慮的門（距離）高於此水平，將觸發靜止檢測。以下相同
   g1_move_threshold: 10
   g1_still_threshold: 20
   g2_move_threshold: 20
