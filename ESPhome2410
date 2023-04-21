@@ -58,7 +58,6 @@ i2c:
 web_server:
 
 uart:
-  id: uart_bus
   tx_pin: 1
   rx_pin: 3
   baud_rate: 256000
