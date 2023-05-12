@@ -1,0 +1,117 @@
+substitutions:
+  devicename: porch
+
+esphome:
+  name: $devicename
+  friendly_name: 玄關
+
+esp8266:
+  board: esp12e
+
+# Enable logging
+logger:
+  baud_rate: 0
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "vdNwn6bfc5mVpGXxhwr9qpV49wFL4gwV2Wgb4rGFw3U="
+
+ota:
+  password: "2084b6542efc893469cbbef7e0d9b6af"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${devicename} Fallback Hotspot"
+    password: "LdSDQV7kVMfE"
+
+captive_portal:
+
+i2c:
+  sda: 13
+  scl: 14
+  scan: true
+  id: bus_a
+
+uart:
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
+
+ld2410:
+  timeout: 10s           #離開後存在狀態將保持存在的時間（以秒為單位）
+  max_move_distance : 3m  #運動檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
+  max_still_distance: 3m #靜態檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
+  g0_move_threshold: 100      #用於運動檢測的第 gX 個門的閾值（X => 0 到 8）。對於所考慮的門（距離）高於此級別，將觸發移動檢測。以下相同
+  g0_still_threshold: 0     #用於靜態檢測的第 gX 個門的閾值。（X => 0 到 8）。對於所考慮的門（距離）高於此水平，將觸發靜止檢測。以下相同
+  g1_move_threshold: 100
+  g1_still_threshold: 0
+  g2_move_threshold: 10
+  g2_still_threshold: 8
+  g3_move_threshold: 10
+  g3_still_threshold: 8
+  g4_move_threshold: 12
+  g4_still_threshold: 17
+
+sensor:
+  - platform: bh1750
+    name: "${devicename} illuminance"
+    id: ill
+    address: 0x23
+    update_interval: 1s
+  - platform: ld2410
+    moving_distance:
+      name : ${devicename} Moving Distance
+    still_distance:
+      name: ${devicename} Still Distance
+    moving_energy:
+      name: ${devicename} Move Energy
+    still_energy:
+      name: ${devicename} Still Energy
+    detection_distance:
+      name: ${devicename} Detection Distance
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: ${devicename} Presence
+  - platform: gpio
+    pin: 12
+    name: "${devicename} Presence2"
+    id: Presence2
+    device_class: motion
+    on_press:
+      then:
+        - if:
+            condition:
+              lambda: 'return id(ill).state < 7;'
+            then:
+              - switch.turn_on: ${devicename}_Relay
+    on_release:
+      then:
+        - switch.turn_off: ${devicename}_Relay
+  - platform: gpio
+    pin: 4
+    name: "${devicename} motion"
+    id: motion
+    device_class: motion
+    on_press:
+      then:
+        if:
+          condition:
+            and:
+                - binary_sensor.is_on: Presence2
+                - lambda: return id(ill).state < 7;
+          then:
+              - switch.turn_on: ${devicename}_Relay
+switch:
+  - platform: gpio
+    name: "${devicename} switch"
+    pin: 5
+    id: ${devicename}_Relay
+    icon: mdi:light-recessed
