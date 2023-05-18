@@ -1,5 +1,5 @@
 substitutions:
-  devicename: LD2410
+  devicename: ld2410
 
 esphome:
   name: $devicename
