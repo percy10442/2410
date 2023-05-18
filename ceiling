@@ -1,9 +1,9 @@
 substitutions:
-  devicename: porch
+  devicename: LD2410
 
 esphome:
   name: $devicename
-  friendly_name: 玄關
+  friendly_name: LD2410
 
 esp8266:
   board: esp12e
@@ -45,19 +45,27 @@ uart:
 
 ld2410:
   timeout: 10s           #離開後存在狀態將保持存在的時間（以秒為單位）
-  max_move_distance : 3m  #運動檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
-  max_still_distance: 3m #靜態檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
+  max_move_distance : 6m  #運動檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
+  max_still_distance: 6m #靜態檢測的最大距離。值介於0.75m和6m包含之間。默認為4.5m
   g0_move_threshold: 100      #用於運動檢測的第 gX 個門的閾值（X => 0 到 8）。對於所考慮的門（距離）高於此級別，將觸發移動檢測。以下相同
   g0_still_threshold: 0     #用於靜態檢測的第 gX 個門的閾值。（X => 0 到 8）。對於所考慮的門（距離）高於此水平，將觸發靜止檢測。以下相同
   g1_move_threshold: 100
   g1_still_threshold: 0
-  g2_move_threshold: 10
-  g2_still_threshold: 8
-  g3_move_threshold: 10
-  g3_still_threshold: 8
-  g4_move_threshold: 12
-  g4_still_threshold: 17
-
+  g2_move_threshold: 15
+  g2_still_threshold: 12
+  g3_move_threshold: 15
+  g3_still_threshold: 2
+  g4_move_threshold: 15
+  g4_still_threshold: 12
+  g5_move_threshold: 15
+  g5_still_threshold: 12
+  g6_move_threshold: 15
+  g6_still_threshold: 12
+  g7_move_threshold: 15
+  g7_still_threshold: 12
+  g8_move_threshold: 15
+  g8_still_threshold: 12
+  
 sensor:
   - platform: bh1750
     name: "${devicename} illuminance"
@@ -77,19 +85,18 @@ sensor:
       name: ${devicename} Detection Distance
 
 binary_sensor:
-  - platform: ld2410
-    has_target:
-      name: ${devicename} Presence
   - platform: gpio
     pin: 12
-    name: "${devicename} Presence2"
+    name: "${devicename} Presence"
     id: Presence2
     device_class: motion
     on_press:
       then:
         - if:
             condition:
-              lambda: 'return id(ill).state < 7;'
+              and:  
+                - lambda: return id(ill).state < 2;
+                - switch.is_off: ${devicename}_Relay
             then:
               - switch.turn_on: ${devicename}_Relay
     on_release:
@@ -106,7 +113,8 @@ binary_sensor:
           condition:
             and:
                 - binary_sensor.is_on: Presence2
-                - lambda: return id(ill).state < 7;
+                - lambda: return id(ill).state < 2;
+                - switch.is_off: ${devicename}_Relay 
           then:
               - switch.turn_on: ${devicename}_Relay
 switch:
