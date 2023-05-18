@@ -90,32 +90,33 @@ binary_sensor:
     name: "${devicename} Presence"
     id: Presence2
     device_class: motion
-    on_press:
+     #自動化
+    on_press:         #當人體存在為on觸發
       then:
         - if:
             condition:
-              and:  
-                - lambda: return id(ill).state < 2;
+              and:    #亮度小於2 且 燈沒開
+                - lambda: return id(ill).state < 2;           
                 - switch.is_off: ${devicename}_Relay
-            then:
+            then:     #開燈
               - switch.turn_on: ${devicename}_Relay
-    on_release:
-      then:
+    on_release:       #當人體存在為off
+      then:           #關燈
         - switch.turn_off: ${devicename}_Relay
   - platform: gpio
     pin: 4
     name: "${devicename} motion"
     id: motion
     device_class: motion
-    on_press:
+    on_press:         #當人體移動為on觸發
       then:
         if:
           condition:
-            and:
+            and:      #人體存在為off 且 亮度小於2 且 燈沒開
                 - binary_sensor.is_on: Presence2
                 - lambda: return id(ill).state < 2;
                 - switch.is_off: ${devicename}_Relay 
-          then:
+          then:        #關燈
               - switch.turn_on: ${devicename}_Relay
 switch:
   - platform: gpio
