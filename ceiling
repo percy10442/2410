@@ -112,11 +112,11 @@ binary_sensor:
       then:
         if:
           condition:
-            and:      #人體存在為off 且 亮度小於2 且 燈沒開
+            and:      #人體存在為on 且 亮度小於2 且 燈沒開
                 - binary_sensor.is_on: Presence2
                 - lambda: return id(ill).state < 2;
                 - switch.is_off: ${devicename}_Relay 
-          then:        #關燈
+          then:        #開燈
               - switch.turn_on: ${devicename}_Relay
 switch:
   - platform: gpio
